@@ -7,7 +7,7 @@ class Academicien(models.Model):
     matricule = models.CharField(max_length=6, unique=True)
     nom = models.CharField(max_length=50)
     prenoms = models.CharField(max_length=100)
-    photo = models.ImageField(upload_to='images', default='')
+    photo = models.ImageField(upload_to='images', default='', blank = True, null = True)
     def __str__(self):
         return self.matricule   
 
