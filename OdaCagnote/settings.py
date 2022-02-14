@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'api',
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = 'OdaCagnote.urls'
@@ -82,7 +84,7 @@ DATABASES = {
         # 'NAME': BASE_DIR / 'db.sqlite3',
   
     'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'adacagnote', # nom de la bd
+        'NAME': 'odacagnote', # nom de la bd
         'USER': 'root', # user
         'PASSWORD': '', # mot de passe
         'PORT': '3306',
@@ -108,7 +110,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 

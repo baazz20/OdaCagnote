@@ -18,5 +18,5 @@ class PayementSerializer(serializers.ModelSerializer):
 
 
     class Meta:
-        model = Payement
+        model = Payement,
         fields = '__all__'
