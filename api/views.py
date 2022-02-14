@@ -1,5 +1,6 @@
 from urllib import response
 from django.db.models import Avg, Count, Min, Sum
+from django.http import HttpResponse
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -45,7 +46,9 @@ class NombreDePaiementPourRetardOuPourAvoirDitMrParDate(APIView):
             libelle='Mr').values_list('id', flat=True).first()).count()
         return Response(nombreRetardEtMrAuneDateDonne)
 
-#CRUD ACADEMICIEN
+# CRUD ACADEMICIEN
+
+
 class ListAcademicienAPIView(ListAPIView):
     """List des Academiciens disponible dans la table"""
     queryset = Academicien.objects.all()
@@ -70,7 +73,7 @@ class DeleteAcademicienAPIView(DestroyAPIView):
     serializer_class = AcademicienSerializer
 
 
-#CRUD MOTIF
+# CRUD MOTIF
 class ListMotifAPIView(ListAPIView):
     """List des motifs disponible dans la bd"""
     queryset = Motif.objects.all()
@@ -95,8 +98,7 @@ class DeleteMotifAPIView(DestroyAPIView):
     serializer_class = MotifSerializer
 
 
-
-#CRUD Payement
+# CRUD Payement
 class ListPayementAPIView(ListAPIView):
     """List des Payements disponible dans la bd"""
     queryset = Payement.objects.all()
@@ -120,26 +122,33 @@ class DeletePayementAPIView(DestroyAPIView):
     queryset = Payement.objects.all()
     serializer_class = PayementSerializer
 
-
-
-
 class ClassementParPaiementAPIView(APIView):
 
-    """Classement des payement par montant"""
-    # def get(self, request):
-    #     result={}
-    #     queryset = Academicien.objects.raw('SELECT * FROM api_academicien  INNER JOIN api_payement ON api_academicien.id = api_payement.id_academicien;')
-    #     # for i in queryset:
-    #     #     result['nom'] = i.nom
-
-    #     return response(result)
-    # 
+ #Classement des payement par montant
     def get(self, request):
-            result = {}
-            j=0
-            queryset = Academicien.objects.raw('SELECT * FROM api_academicien  INNER JOIN api_payement ON api_academicien.id = api_payement.id_academicien;')
-            for i in queryset:
-                j=j+1
-                result['nom'+str(j)] = i.nom
-                result['montant'+str(j)] = i.montant
-            return Response(result)   
+        result=[]
+        queryset=Payement.objects.select_related("id_academicien").all()
+        # serializer = PayementSerializer(queryset, many=True)
+        # i=Payement.objects.select_related("id_academicien").all().count()-1
+        # while i>0:
+        #     for p in queryset:
+        #         result.append(p.nom)
+        #     i=i-1
+            
+        for i in queryset:
+            # result.append(i.nom)
+            result.append(i.montant)
+
+        return Response(result)
+    #
+    # def get(self, request):
+    #     result=[]
+    #     for p in  Payement.objects.raw('SELECT * FROM api_payement INNER JOIN api_academicien ON api_payement.id_academicien = api_academicien.id'):
+    #         result.append(p.nom)
+    #     return Response(result)
+
+# class ClassementParPaiementAPIView(ListAPIView):
+#     """List des Payements disponible dans la bd"""
+#     queryset=Payement.objects.select_related("id_academicien").all()
+#     # queryset= Academicien.objects.annotate(montant=Sum("payement__montant"))
+#     serializer_class = PayementSerializer
