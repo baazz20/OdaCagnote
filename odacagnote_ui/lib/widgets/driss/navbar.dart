@@ -12,10 +12,6 @@ class NavBar extends StatelessWidget {
             accountEmail: Text(''),
             decoration: BoxDecoration(
                 color: Colors.orangeAccent,
-                image: DecorationImage(
-                    fit: BoxFit.fill,
-                    image: AssetImage('assets/images/logooda-l.png')
-                )
             ),
           ),
           ListTile(
