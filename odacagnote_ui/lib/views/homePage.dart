@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:odacagnote_ui/widgets/driss/navbar.dart';
 
 import '../widgets/button.dart';
 import '../widgets/total_card.dart';
@@ -146,6 +147,10 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       backgroundColor: Colors.grey[300],
+      appBar: AppBar(
+        backgroundColor: Colors.grey[300],
+      ),
+      drawer: NavBar(),
       body: Padding(
         padding: const EdgeInsets.all(25.0),
         child: Column(

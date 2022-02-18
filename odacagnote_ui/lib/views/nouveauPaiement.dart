@@ -48,8 +48,8 @@ class MyTransaction extends StatelessWidget {
               ),
               Text(
                 ' 100 FCFA',
-                style: TextStyle(
                   //fontWeight: FontWeight.bold,
+                style: TextStyle(
                   fontSize: 16,
                   color: Colors.green,
                 ),
