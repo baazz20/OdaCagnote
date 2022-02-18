@@ -1,4 +1,3 @@
-import 'package:odacagnote_ui/views/homePage.dart';
 import 'package:flutter/material.dart';
 
 class NavBar extends StatelessWidget {
@@ -27,35 +26,15 @@ class NavBar extends StatelessWidget {
             },
           ),
           ListTile(
-            leading: Icon(Icons.admin_panel_settings),
-            title: Text('Administration'),
+            leading: Icon(Icons.manage_accounts),
+            title: Text('Academicien'),
             onTap: () => {
 
             },
           ),
           ListTile(
-            leading: Icon(Icons.favorite),
-            title: Text('Paiements'),
-            onTap: () => null,
-          ),
-          ListTile(
-            leading: Icon(Icons.favorite),
-            title: Text('Payer'),
-            onTap: () => null,
-          ),
-          ListTile(
-            leading: Icon(Icons.favorite),
-            title: Text('Payer'),
-            onTap: () => null,
-          ),
-          ListTile(
-            leading: Icon(Icons.favorite),
-            title: Text('Payer'),
-            onTap: () => null,
-          ),
-          ListTile(
-            leading: Icon(Icons.favorite),
-            title: Text('Payer'),
+            leading: Icon(Icons.tab),
+            title: Text('Motifs'),
             onTap: () => null,
           ),
         ],
