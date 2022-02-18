@@ -4,6 +4,7 @@ from django.db import models
 # Create your models here.
 
 class Academicien(models.Model):
+    status = models.BooleanField(default = False,verbose_name="Statut du academicien")
     matricule = models.CharField(max_length=120, unique=True)
     nom = models.CharField(max_length=50)
     prenoms = models.CharField(max_length=100)
@@ -12,6 +13,7 @@ class Academicien(models.Model):
         return self.matricule   
 
 class Motif(models.Model):
+    status = models.BooleanField(default = False, verbose_name="Statut du motif")
     libelle = models.CharField(max_length=200)
     lien = models.ManyToManyField(Academicien, through = 'Payement', related_name='paiement', blank=True, verbose_name = 'Lien')
     def __str__(self):

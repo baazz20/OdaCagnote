@@ -18,10 +18,10 @@ class _MenuglobalState extends State<Menuglobal> {
     return Scaffold(
         backgroundColor: Colors.grey[300],
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          centerTitle: true,
-          title: Text("Cagnotte", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),),
+          backgroundColor: Colors.grey[300],
+            title: Text("Menu académicien", style: TextStyle(
+                color: Colors.black,fontSize: 20 ,fontWeight: FontWeight.bold),)
+        ),
         body: Center(
             child:Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -30,7 +30,7 @@ class _MenuglobalState extends State<Menuglobal> {
                       child: Container(
                         margin: EdgeInsets.all(20),
                         width: double.infinity,
-                        height: 80,
+                        height: 40,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                         ),
@@ -44,7 +44,7 @@ class _MenuglobalState extends State<Menuglobal> {
                           onPressed: ()=>{
 
                           },
-                          child: Text('Academicien'),
+                          child: Text('Ajouter academicien'),
                         ),
                       )
                   ),
@@ -53,7 +53,7 @@ class _MenuglobalState extends State<Menuglobal> {
                       child: Container(
                         margin: EdgeInsets.all(20),
                         width: double.infinity,
-                        height: 80,
+                        height: 40,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                         ),
@@ -67,7 +67,7 @@ class _MenuglobalState extends State<Menuglobal> {
                           onPressed: ()=>{
 
                           },
-                          child: Text('Motif'),
+                          child: Text('Liste des academiciens',style: TextStyle(color: Colors.white),),
                         ),
                       )
                   )

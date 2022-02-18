@@ -6,14 +6,14 @@ class AcademicienSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Academicien
-		fields = "__all__"
+		exclude = 'status'
 
 class PayementSerializer(serializers.ModelSerializer):
 	
 
 	class Meta:
 		model = Payement
-		fields = ('__all__')
+		exclude = 'status'
 
 class MotifSerializer(serializers.ModelSerializer):
 
