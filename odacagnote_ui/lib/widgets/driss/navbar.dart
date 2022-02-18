@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:odacagnote_ui/views/driss/acad.dart';
 
 class NavBar extends StatelessWidget {
   @override
@@ -25,7 +26,10 @@ class NavBar extends StatelessWidget {
             leading: Icon(Icons.manage_accounts),
             title: Text('Academicien'),
             onTap: () => {
-
+              Navigator.push(
+                  context, 
+                  MaterialPageRoute(builder: (context) => const Menuglobal())
+              )
             },
           ),
           ListTile(

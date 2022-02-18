@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:odacagnote_ui/widgets/driss/animation.dart';
+import 'package:odacagnote_ui/views/homePage.dart';
 
 class Menuglobal extends StatefulWidget {
   const Menuglobal({Key? key}) : super(key: key);
@@ -15,18 +16,12 @@ class _MenuglobalState extends State<Menuglobal> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-        backgroundColor: Colors.grey[400],
+        backgroundColor: Colors.grey[300],
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: true,
           title: Text("Cagnotte", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),),
-        drawer: Drawer(
-          child: IconButton(
-            onPressed: () =>{},
-            icon: Icon(Icons.arrow_back),
-          ),
-        ),
         body: Center(
             child:Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -47,10 +42,7 @@ class _MenuglobalState extends State<Menuglobal> {
                               )
                           ),
                           onPressed: ()=>{
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const Acadmenu()),
-                            )
+
                           },
                           child: Text('Academicien'),
                         ),
@@ -73,10 +65,7 @@ class _MenuglobalState extends State<Menuglobal> {
                               )
                           ),
                           onPressed: ()=>{
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const Motifmenu()),
-                            )
+
                           },
                           child: Text('Motif'),
                         ),
