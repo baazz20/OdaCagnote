@@ -41,4 +41,11 @@ urlpatterns = [
     ####### 4ème fonctionnalité
     path('solde/<yyyy-mm-dd:date>',views.soldeDate),
 
+    # statistiques
+     # endpoint Calculs
+    path('paiement/stat/motif/<int:lib>',views.getNombrePayementByMotif().as_view()),
+    path('paiement/stat/motif/<int:lib>?<jj>/<mm>/<AA>',views.NombreDePaiementMotifParDate.as_view(), ),
+    path('paiement/stat/classement', views.ClassementParPaiementAPIView.as_view()),
+
+
 ]

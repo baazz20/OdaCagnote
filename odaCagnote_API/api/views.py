@@ -15,16 +15,16 @@ from rest_framework.views import APIView
 
 @api_view(['POST'])
 def postPayement(request):
-    idacad = int(request.data['id_academicien'])
-    motif = int(request.data['id_motif'])
+    idacad = int(request.data['academicien'])
+    motif = int(request.data['motif'])
     date=request.data['date']
 
     if Academicien.objects.filter(pk=idacad) and Motif.objects.filter(pk=motif):
         id_acad = Academicien.objects.get(pk=idacad)
-        id_motif = Motif.objects.get(pk=motif)
+        motif = Motif.objects.get(pk=motif)
         serializer = PayementSerializer(data=request.data)
         if serializer.is_valid():
-            if not Payement.objects.filter(id_academicien=id_acad,id_motif=id_motif,date=date):
+            if not Payement.objects.filter(academicien=id_acad,motif=motif,date=date):
                 serializer.save()
                 return Response({"status":200})
             else:
@@ -209,11 +209,11 @@ def getPayementByDate(request,date):
         "date":i.date,
         "montant":i.montant,
         "heure":i.heure,
-        "nom":i.id_academicien.nom,
-        "prenom":i.id_academicien.prenoms,
-        "photo":i.id_academicien.photo.url,
-        "matricule":i.id_academicien.matricule,
-        "motif":i.id_motif.libelle,
+        "nom":i.academicien.nom,
+        "prenom":i.academicien.prenoms,
+        "photo":i.academicien.photo.url,
+        "matricule":i.academicien.matricule,
+        "motif":i.motif.libelle,
         }
         der.append(dos)
     return JsonResponse({"status": "200", "data": der})
@@ -224,7 +224,7 @@ def getPayementByMotif(request,lib):
     if not Motif.objects.filter(pk=lib):
         return Response({'status':'400'})
     moti = Motif.objects.get(pk=lib)
-    payements = Payement.objects.filter(id_motif=moti.id)
+    payements = Payement.objects.filter(motif=moti.id)
     serializer = PayementSerializer(payements, many = True)
     return Response(serializer.data)
 
@@ -235,7 +235,7 @@ def getPayementByMatricule(request,mat):
         return Response({'status':'400'})
         
     acad = Academicien.objects.get(matricule=mat)
-    payements = Payement.objects.filter(id_academicien=acad.pk)
+    payements = Payement.objects.filter(academicien=acad.pk)
     serializer = PayementSerializer(payements, many = True)
     return Response({"status": "200", "data": serializer.data})
 
@@ -251,7 +251,7 @@ def getPayement(request,date,mat,lib):
 
     acad = Academicien.objects.get(matricule=mat)
     moti = Motif.objects.get(pk=lib)
-    payements = Payement.objects.filter(date=date,id_academicien=acad.pk,id_motif=moti)
+    payements = Payement.objects.filter(date=date,academicien=acad.pk,motif=moti)
     serializer = PayementSerializer(payements, many = True)
     return Response({"status": "200", "data": serializer.data})
 
@@ -264,3 +264,48 @@ def soldeDate(request,date):
     soldes = Payement.objects.filter(date=date).aggregate(comme=Sum('montant'))
     ab = soldes['comme']
     return Response({"status": "200", "data": {"solde":ab}})
+
+
+
+# Calculs statistiques
+class getNombrePayementByMotif(APIView):
+    '''Class qui retourne le nombre de payement par motif'''
+
+    def get(self, request, lib):
+        nombreRetardEtMr = {}
+        if not Motif.objects.filter(pk=lib):
+            return Response({'status': '400'})
+        moti = Motif.objects.get(pk=lib)
+        nombreRetardEtMr[moti.libelle] = Payement.objects.filter(motif=Motif.objects.filter(
+            libelle=moti.libelle).values_list('id', flat=True).first()).count()
+        return Response(nombreRetardEtMr)
+
+
+class NombreDePaiementMotifParDate(APIView):
+    '''Class qui retourne le nombre de payement pour retart ou pour avoir dit Mr dans une date donnée'''
+
+    def get(self, request,lib, jj, mm, AA):
+        nombreRetardEtMrAuneDateDonne = {}
+        slug = AA+'-'+mm+'-'+jj
+        if not Motif.objects.filter(pk=lib):
+            return Response({'status': '400'})
+        moti = Motif.objects.get(pk=lib)
+        nombreRetardEtMrAuneDateDonne[moti] = Payement.objects.filter(date=slug, motif=Motif.objects.filter(
+            libelle=moti).values_list('id', flat=True).first()).count()
+        nombreRetardEtMrAuneDateDonne["Mr"] = Payement.objects.filter(date=slug, motif=Motif.objects.filter(
+            libelle='Mr').values_list('id', flat=True).first()).count()
+        return Response(nombreRetardEtMrAuneDateDonne)
+
+# endpoint du classement des payeurs
+class ClassementParPaiementAPIView(APIView):
+ # Classement des payement par montant
+    def get(self, request):
+        result = {}
+        queryset = Academicien.objects.all().order_by('-sommeTotalPaieyer')
+        for i in queryset:
+            # result.append(i.nom)
+            result[i.nom + " "+ i.prenoms]= i.sommeTotalPaieyer
+
+        return Response(result)
+
+
