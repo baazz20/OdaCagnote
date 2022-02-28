@@ -2,37 +2,37 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from .serializers import *
 from rest_framework.generics import ListAPIView
-from rest_framework.generics import CreateAPIView
 from rest_framework.decorators import api_view
-from rest_framework.generics import DestroyAPIView
-from rest_framework.generics import UpdateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db.models import *
+from api.tests import retour
+from .serializers import *
+from rest_framework.views import APIView
 # Create your views here.
 
 ############## 1- Enregistrer les paiements #####################
 
 @api_view(['POST'])
 def postPayement(request):
-	idacad = int(request.data['id_academicien'])
-	motif = int(request.data['id_motif'])
-	date=request.data['date']
+    idacad = int(request.data['id_academicien'])
+    motif = int(request.data['id_motif'])
+    date=request.data['date']
 
-	if Academicien.objects.filter(pk=idacad) and Motif.objects.filter(pk=motif):
-		id_acad = Academicien.objects.get(pk=idacad)
-		id_motif = Motif.objects.get(pk=motif)
-		serializer = PayementSerializer(data=request.data)
-		if serializer.is_valid():
-			if not Payement.objects.filter(id_academicien=id_acad,id_motif=id_motif,date=date):
-				serializer.save()
-				return Response({"status":200})
-			else:
-				return Response({"status":400,"data":""})
-		else :
-			return Response({"status":401,"data":serializer.errors})
-	else:
-		return Response({"status":402,"data":""})
+    if Academicien.objects.filter(pk=idacad) and Motif.objects.filter(pk=motif):
+        id_acad = Academicien.objects.get(pk=idacad)
+        id_motif = Motif.objects.get(pk=motif)
+        serializer = PayementSerializer(data=request.data)
+        if serializer.is_valid():
+            if not Payement.objects.filter(id_academicien=id_acad,id_motif=id_motif,date=date):
+                serializer.save()
+                return Response({"status":200})
+            else:
+                return Response({"status":400,"data":""})
+        else :
+            return Response({"status":401,"data":serializer.errors})
+    else:
+        return Response({"status":402,"data":""})
 
 
 class ListPayementAPIView(ListAPIView):
@@ -41,122 +41,182 @@ class ListPayementAPIView(ListAPIView):
     serializer_class = PayementSerializer
 
 
-####################### 2-A CRUD Academicien
+############## 2-CRUD des entités ###############################
+####### 1- CRUD Académiciens #########
 
-class AcademicienViewSet(APIView):
+# a- Create des académiciens
 
-	def post(self, request):
-		mat = request.data['matricule']
-		if not Academicien.objects.filter(matricule=mat):
-			serializer = AcademicienSerializer(data=request.data)
-			if serializer.is_valid():
-				serializer.save()
-				return Response({"status": "200", "data": serializer.data}, )
-			else :
-				return Response({"status": "400", "data": serializer.errors}, )
-		else:
-			return Response({"status": "404", "data": "Matricule déja existant"}, )
+@api_view(['POST'])
+def addAcad(request):
+    try:
+        data = {}
+        if request.method == 'POST':
+            mat = request.data['matricule']
+            if not Academicien.objects.filter(matricule=mat):
+                serializer = AcademicienSerializer(data=request.data)
+                if serializer.is_valid():
+                    serializer.save()
+                    return retour(200,serializer.data)
+                else:
+                    return retour(301,data)
+            else :
+                return retour(300,data)
+        else :
+            return retour(400,data)
+    except:
+        return retour(405,data)
 
-	def get(self, request, mat = None):
-		if mat :
-			if Academicien.objects.filter(matricule=mat):
-				item = Academicien.objects.get(matricule=mat)
-				serializer = AcademicienSerializer(item)
-				return Response({"status": "200", "data": serializer.data}, )
-			else:
-				return Response({"status": "404", "data": "Académicien introuvable"}, )
+@api_view(['GET'])
+def getAcad(request):
+   try:
+        data = {}
+        if request.method == 'GET':
+            acad = Academicien.objects.filter(status=True)
+            serializer = AcademicienSerializer(acad, many=True)
+            return retour(200,serializer.data)
+        else :
+            return retour(400,data)
+   except:
+       return retour(405,data)
 
-		items = Academicien.objects.all()
-		serializer = AcademicienSerializer(items, many=True)
-		return Response({"status": "200", "data": serializer.data})
+@api_view(['PUT'])
+def putAcad(request,ide):
+    try:
+        data = {}
+        if request.method == 'PUT':
+            if Academicien.objects.filter(pk=ide):
+                acad =  Academicien.objects.get(pk=ide)
+                serializer = AcademicienSerializer(acad,data=request.data, partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return retour(200,serializer.data)
+                else:
+                    return retour(301,data)
+            else :
+                return retour(300,data)
+        else :
+            return retour(400,data)
+    except:
+        return retour(405,data)
 
-	def put(self, request,mat):
-		mat = request.data['id']
-		if Academicien.objects.filter(pk=mat):
-			item = Academicien.objects.get(pk=mat)
-			serializer = AcademicienSerializer(item,data=request.data,partial=True)
-			if serializer.is_valid():
-				serializer.save()
-				return Response({"status": "200", "data": serializer.data}, )
-			else :
-				return Response({"status": "400", "data": serializer.errors}, )
-		else:
-			return Response({"status": "404", "data": "Académicien introuvable"}, )
+@api_view(['DELETE'])
+def delAcad(request,ide):
+    try:
+        data = {}
+        if request.method == 'DELETE':
+            if Academicien.objects.filter(pk=ide):
+                acad =  Academicien.objects.get(pk=ide)
+                acad.status = False
+                acad.save()
+                return retour(200,data)
+            else :
+                return retour(300,data)
+        else :
+            return retour(400,data)
+    except:
+        return retour(405,data)
+# b- Lire des académiciens
 
-	def delete(self, request, mat):
-		if Academicien.objects.filter(matricule=mat):
-			item = Academicien.objects.get(matricule=mat)
-			item.delete()
-			return Response({"status": "200"})
-		else:
-			return Response({"status": "404", "data": "Académicien introuvable"}, )
+####### 1- CRUD Motif #########
 
- 
+# a- Create des motifs
 
-####################### 2-B CRUD Motif
-class MotifViewSet(APIView):
+@api_view(['POST'])
+def addMotif(request):
+    try:
+        data = {}
+        if request.method == 'POST':
+            libelle = request.data['libelle']
+            if not Motif.objects.filter(libelle__iexact=libelle):
+                serializer = MotifSerializer(data=request.data)
+                if serializer.is_valid():
+                    serializer.save()
+                    return retour(200,serializer.data)
+                else :
+                    return retour(401,data)
+            else:
+                return retour(300,data)
+        else :
+            return retour(400,data)
+    except:
+        return retour(405,data)
 
-	def post(self, request):
-		mat = request.data['libelle']
-		print(mat)
-		if not Motif.objects.filter(libelle__iexact=mat):
-			serializer = MotifSerializer(data=request.data)
-			if serializer.is_valid():
-				serializer.save()
-				return Response({"status": "200", "data": serializer.data}, )
-			else :
-				return Response({"status": "400", "data": serializer.errors}, )
-		else:
-			return Response({"status": "404", "data": "Motif existant"}, )
+@api_view(['GET'])
+def getMotif(request):
+    try :
+        data = {}
+        if request.method == 'GET':
+            motif = Motif.objects.filter(status=True)
+            serializer = MotifSerializer(motif, many=True)
+            return retour(200,serializer.data)
+        else :
+            return retour(400,data)
+    except:
+        return retour(405,data)
 
-	def get(self, request):
-		items = Motif.objects.all()
-		serializer = MotifSerializer(items, many=True)
-		return Response({"status": "200", "data": serializer.data})
+@api_view(['PUT'])
+def putMotif(request,ide):
+    try:
+        data = {}
+        if request.method == 'PUT':
+            if Motif.objects.filter(pk=ide):
+                motif =  Motif.objects.get(pk=ide)
+                if Motif.objects.filter(libelle__iexact=request.data['libelle']).exclude(pk=ide):
+                    return retour(301,data)
+                serializer = MotifSerializer(motif,data=request.data, partial=True)
+                if serializer.is_valid():
+                    serializer.save()
+                    return retour(200,serializer.data)
+                else:
+                    return retour(301,data)
+            else :
+                return retour(300,data)
+        else :
+            return retour(400,data)
+    except:
+        return retour(405,data)
 
-	def put(self, request):
-		mat = request.data['id']
-		if Motif.objects.filter(pk=mat):
-			item = Motif.objects.get(pk=mat)
-			serializer = MotifSerializer(item,data=request.data,partial=True)
-			if serializer.is_valid():
-				serializer.save()
-				return Response({"status": "200", "data": serializer.data}, )
-			else :
-				return Response({"status": "400", "data": serializer.errors}, )
-		else:
-			return Response({"status": "404", "data": "Motif inexistant"}, )
+@api_view(['DELETE'])
+def delMotif(request,ide):
+    try:
+        data = {}
+        if request.method == 'DELETE':
+            if Motif.objects.filter(pk=ide):
+                motif =  Motif.objects.get(pk=ide)
+                motif.status = False
+                motif.save()
+                return retour(200,data)
+            else :
+                return retour(300,data)
+        else :
+            return retour(400,data)
+    except:
+        return retour(405,data)
 
-	def delete(self, request, mat):
-		if Motif.objects.filter(pk=mat):
-			item = Motif.objects.get(pk=mat)
-			item.delete()
-			return Response({"status": "200"})
-		else:
-			return Response({"status": "404", "data": "Motif inexistant"}, )
 
 ############### 3-Liste de tous les payements
 
 @api_view(['GET'])
 def getPayementByDate(request,date):
-	der =[]
-	dos = {}
-	if not Payement.objects.filter(date=date):
-	    return Response({'status':'400',"data": "Motif inexistant"})
-	payements = Payement.objects.filter(date=date)
-	for i in payements:
-		dos = {
-		"date":i.date,
-		"montant":i.montant,
-		"heure":i.heure,
-		"nom":i.id_academicien.nom,
-		"prenom":i.id_academicien.prenoms,
-		"photo":i.id_academicien.photo.url,
-		"matricule":i.id_academicien.matricule,
-		"motif":i.id_motif.libelle,
-		}
-		der.append(dos)
-	return JsonResponse({"status": "200", "data": der})
+    der =[]
+    dos = {}
+    if not Payement.objects.filter(date=date):
+        return Response({'status':'400',"data": "Motif inexistant"})
+    
+    payements = Payement.objects.filter(date=date)
+    for i in payements:
+        dos = {
+        "date":i.date,
+        "montant":i.montant,
+        "heure":i.heure,
+        "nom":i.id_academicien.nom,
+        "prenom":i.id_academicien.prenoms,
+        "photo":i.id_academicien.photo.url,
+        "matricule":i.id_academicien.matricule,
+        "motif":i.id_motif.libelle,
+        }
+        der.append(dos)
+    return JsonResponse({"status": "200", "data": der})
    
 
 @api_view(['GET'])
@@ -181,19 +241,19 @@ def getPayementByMatricule(request,mat):
 
 @api_view(['GET'])
 def getPayement(request,date,mat,lib):
-	if not Payement.objects.filter(date=date) :
-		return Response({'status':'400'})
-	if not Academicien.objects.filter(matricule=mat):
-		return Response({'status':'401'})
+    if not Payement.objects.filter(date=date) :
+        return Response({'status':'400'})
+    if not Academicien.objects.filter(matricule=mat):
+        return Response({'status':'401'})
 
-	if  not Motif.objects.filter(pk=lib):
-		return Response({'status':'402'})
+    if  not Motif.objects.filter(pk=lib):
+        return Response({'status':'402'})
 
-	acad = Academicien.objects.get(matricule=mat)
-	moti = Motif.objects.get(pk=lib)
-	payements = Payement.objects.filter(date=date,id_academicien=acad.pk,id_motif=moti)
-	serializer = PayementSerializer(payements, many = True)
-	return Response({"status": "200", "data": serializer.data})
+    acad = Academicien.objects.get(matricule=mat)
+    moti = Motif.objects.get(pk=lib)
+    payements = Payement.objects.filter(date=date,id_academicien=acad.pk,id_motif=moti)
+    serializer = PayementSerializer(payements, many = True)
+    return Response({"status": "200", "data": serializer.data})
 
 ########## 4-Solde de la caisse à un moment donné
 

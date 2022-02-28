@@ -21,16 +21,16 @@ urlpatterns = [
     path('paiements/', views.ListPayementAPIView.as_view(),),
 
     ########2ème
-    path('academicien/add/', views.AcademicienViewSet.as_view(),),
-    path('academicien/', views.AcademicienViewSet.as_view(),),
-    path('academicien/one/<str:mat>', views.AcademicienViewSet.as_view(),),
-    path('academicien/update/', views.AcademicienViewSet.as_view(),),
-    path('academicien/destroy/<str:mat>', views.AcademicienViewSet.as_view(),),
-
-    path('motif/add',views.MotifViewSet.as_view()),
-    path('motif/', views.MotifViewSet.as_view(),),
-    path('motif/update', views.MotifViewSet.as_view()),
-    path('motif/destroy/<int:mat>', views.MotifViewSet.as_view()),
+    path('academicien/add/',views.addAcad),
+    path('academicien/',views.getAcad),
+    path('academicien/update/<int:ide>',views.putAcad),
+    path('academicien/del/<int:ide>',views.delAcad),
+    
+    #######################CRUD Motif #################
+    path('motif/add/',views.addMotif),
+    path('motif/',views.getMotif),
+    path('motif/update/<int:ide>',views.putMotif),
+    path('motif/del/<int:ide>',views.delMotif),
 
     ######### 3ème fonctionnalités
     path('paiement/<yyyy-mm-dd:date>',views.getPayementByDate),
