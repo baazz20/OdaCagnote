@@ -24,7 +24,7 @@ class Payement(models.Model):
     heure = models.TimeField()
     montant = models.DecimalField(max_digits=8, decimal_places=2)
     id_academicien = models.ForeignKey(Academicien, related_name = 'pay_acad', on_delete = models.CASCADE)
-    id_motif = models.ForeignKey(Motif, related_name = 'pay_acad', on_delete = models.CASCADE)
+    id_motif = models.ForeignKey(Motif, related_name = 'pay_motif', on_delete = models.CASCADE)
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=['date', 'id_academicien', 'id_motif'], name='uniqueKey')]

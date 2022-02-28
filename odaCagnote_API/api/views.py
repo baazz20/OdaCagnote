@@ -1,3 +1,4 @@
+import datetime
 from django.shortcuts import render
 from django.http import JsonResponse
 from .serializers import *
@@ -36,9 +37,9 @@ def postPayement(request):
 
 
 class ListPayementAPIView(ListAPIView):
-    """This endpoint list all of the available todos from the database"""
-    queryset = Payement.objects.all()
-    serializer_class = PayementSerializer
+	"""This endpoint list all of the available todos from the database"""
+	queryset = Payement.objects.all()
+	serializer_class = PayementSerializer
 
 
 ####################### 2-A CRUD Academicien
@@ -142,7 +143,7 @@ def getPayementByDate(request,date):
 	der =[]
 	dos = {}
 	if not Payement.objects.filter(date=date):
-	    return Response({'status':'400',"data": "Motif inexistant"})
+		return Response({'status':'400',"data": "Motif inexistant"})
 	payements = Payement.objects.filter(date=date)
 	for i in payements:
 		dos = {
@@ -157,27 +158,33 @@ def getPayementByDate(request,date):
 		}
 		der.append(dos)
 	return JsonResponse({"status": "200", "data": der})
-   
+	
+@api_view(['GET'])
+def getNumberPresence(request):
+	nbAbscences = Payement.objects.filter(id_motif__libelle='Retard',date=datetime.date.today()).count()
+	nbAcademicien = Academicien.objects.filter().count()
+	nbPresence = nbAcademicien-nbAbscences
+	serializer = {'nbPresence':nbPresence,'nbAbscence':nbAbscences}
+	return Response(serializer)
+ 
 
 @api_view(['GET'])
 def getPayementByMotif(request,lib):
-    if not Motif.objects.filter(pk=lib):
-        return Response({'status':'400'})
-    moti = Motif.objects.get(pk=lib)
-    payements = Payement.objects.filter(id_motif=moti.id)
-    serializer = PayementSerializer(payements, many = True)
-    return Response(serializer.data)
+	if not Motif.objects.filter(pk=lib):
+		return Response({'status':'400'})
+	moti = Motif.objects.get(pk=lib)
+	payements = Payement.objects.filter(id_motif=moti.id)
+	serializer = PayementSerializer(payements, many = True)
+	return Response(serializer.data)
 
 @api_view(['GET'])
 def getPayementByMatricule(request,mat):
-
-    if not Academicien.objects.filter(matricule=mat):
-        return Response({'status':'400'})
-        
-    acad = Academicien.objects.get(matricule=mat)
-    payements = Payement.objects.filter(id_academicien=acad.pk)
-    serializer = PayementSerializer(payements, many = True)
-    return Response({"status": "200", "data": serializer.data})
+	if not Academicien.objects.filter(matricule=mat):
+		return Response({'status':'400'})
+	acad = Academicien.objects.get(matricule=mat)
+	payements = Payement.objects.filter(id_academicien=acad.pk)
+	serializer = PayementSerializer(payements, many = True)
+	return Response({"status": "200", "data": serializer.data})
 
 @api_view(['GET'])
 def getPayement(request,date,mat,lib):
@@ -185,10 +192,8 @@ def getPayement(request,date,mat,lib):
 		return Response({'status':'400'})
 	if not Academicien.objects.filter(matricule=mat):
 		return Response({'status':'401'})
-
 	if  not Motif.objects.filter(pk=lib):
 		return Response({'status':'402'})
-
 	acad = Academicien.objects.get(matricule=mat)
 	moti = Motif.objects.get(pk=lib)
 	payements = Payement.objects.filter(date=date,id_academicien=acad.pk,id_motif=moti)
@@ -199,8 +204,8 @@ def getPayement(request,date,mat,lib):
 
 @api_view(['GET'])
 def soldeDate(request,date):
-    if not Payement.objects.filter(date=date):
-        return Response({'status':'400'})
-    soldes = Payement.objects.filter(date=date).aggregate(comme=Sum('montant'))
-    ab = soldes['comme']
-    return Response({"status": "200", "data": {"solde":ab}})
+	if not Payement.objects.filter(date=date):
+		return Response({'status':'400'})
+	soldes = Payement.objects.filter(date=date).aggregate(comme=Sum('montant'))
+	ab = soldes['comme']
+	return Response({"status": "200", "data": {"solde":ab}})

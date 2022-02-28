@@ -40,5 +40,7 @@ urlpatterns = [
 
     ####### 4ème fonctionnalité
     path('solde/<yyyy-mm-dd:date>',views.soldeDate),
+    
+    path('presence/', views.getNumberPresence),
 
 ]
