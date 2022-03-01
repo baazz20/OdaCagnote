@@ -40,6 +40,7 @@ urlpatterns = [
 
     ####### 4ème fonctionnalité
     path('solde/<yyyy-mm-dd:date>',views.soldeDate),
+    path('solde/',views.solde),
 
     # statistiques
      # endpoint Calculs

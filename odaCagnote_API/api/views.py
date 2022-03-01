@@ -267,6 +267,14 @@ def soldeDate(request,date):
     ab = soldes['comme']
     return Response({"status": "200", "data": {"solde":ab}})
 
+@api_view(['GET'])
+def solde(request):
+    if not Payement.objects.all():
+        return Response({'status':'400'})
+    soldes = Payement.objects.all().aggregate(comme=Sum('montant'))
+    ab = soldes['comme']
+    return Response({"status": "200", "data": {"solde":ab}})
+
 
 
 # Calculs statistiques
