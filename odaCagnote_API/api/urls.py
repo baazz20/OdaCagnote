@@ -46,6 +46,7 @@ urlpatterns = [
     path('paiement/stat/motif/<int:lib>',views.getNombrePayementByMotif().as_view()),
     path('paiement/stat/motif/<int:lib>?<jj>/<mm>/<AA>',views.NombreDePaiementMotifParDate.as_view(), ),
     path('paiement/stat/classement', views.ClassementParPaiementAPIView.as_view()),
+    path('paiement/stat/estimation/<jj>/<mm>/<AA>', views.Estimation.as_view()),
 
 
 ]

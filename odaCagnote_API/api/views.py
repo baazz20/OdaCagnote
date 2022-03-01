@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import render
 from django.http import JsonResponse
 from .serializers import *
@@ -9,6 +10,7 @@ from django.db.models import *
 from api.tests import retour
 from .serializers import *
 from rest_framework.views import APIView
+from datetime import datetime
 # Create your views here.
 
 ############## 1- Enregistrer les paiements #####################
@@ -292,8 +294,6 @@ class NombreDePaiementMotifParDate(APIView):
         moti = Motif.objects.get(pk=lib)
         nombreRetardEtMrAuneDateDonne[moti] = Payement.objects.filter(date=slug, motif=Motif.objects.filter(
             libelle=moti).values_list('id', flat=True).first()).count()
-        nombreRetardEtMrAuneDateDonne["Mr"] = Payement.objects.filter(date=slug, motif=Motif.objects.filter(
-            libelle='Mr').values_list('id', flat=True).first()).count()
         return Response(nombreRetardEtMrAuneDateDonne)
 
 # endpoint du classement des payeurs
@@ -308,4 +308,14 @@ class ClassementParPaiementAPIView(APIView):
 
         return Response(result)
 
-
+class Estimation(APIView):
+    def get(self, request, jj, mm, AA):
+        date_format = "%Y-%m-%d"
+        slug = AA+'-'+mm+'-'+jj
+        date =datetime.now().date()
+        dateFuture = datetime.strptime(str(slug),date_format)
+        date = datetime.strptime(str(date),date_format)
+        nbjour = dateFuture - date
+        queryset = Payement.objects.aggregate(Avg('montant'))
+        print(date)
+        return Response(queryset)
