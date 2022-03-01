@@ -177,13 +177,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.12.11"
-  material_color_utilities:
-    dependency: transitive
-    description:
-      name: material_color_utilities
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.3"
   meta:
     dependency: transitive
     description:
@@ -251,7 +244,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.8"
+    version: "0.4.3"
   typed_data:
     dependency: transitive
     description:
@@ -268,8 +261,11 @@ packages:
     version: "2.1.1"
 sdks:
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   dart: ">=2.16.1 <3.0.0"
 =======
+=======
+>>>>>>> Stashed changes
   dart: ">=2.15.1 <3.0.0"
   flutter: ">=2.5.0"
 >>>>>>> Stashed changes
