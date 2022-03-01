@@ -16,6 +16,7 @@ register_converter(DateConverter, 'yyyy-mm-dd')
 
 urlpatterns = [
 
+
     ######## 1ère fonctionnalité
     path('paiements/add/', views.postPayement,),
     path('paiements/', views.ListPayementAPIView.as_view(),),
@@ -48,6 +49,5 @@ urlpatterns = [
     path('paiement/stat/motif/<int:lib>?<jj>/<mm>/<AA>',views.NombreDePaiementMotifParDate.as_view(), ),
     path('paiement/stat/classement', views.ClassementParPaiementAPIView.as_view()),
     path('paiement/stat/estimation/<jj>/<mm>/<AA>', views.Estimation.as_view()),
-
 
 ]
