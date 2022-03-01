@@ -1,29 +1,24 @@
-import '../driss_helpers/imagenetwork.dart';
-import 'package:flutter/material.dart';
 import '../driss_helpers/api.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart';
-import 'dart:io';
-import '../driss_helpers/putacad.dart';
-import '../driss_helpers/addacad.dart';
-import '../driss_helpers/delacad.dart';
+import '../driss_helpers/putmotif.dart';
+import '../driss_helpers/addmotif.dart';
+import '../driss_helpers/delmotif.dart';
 
-class Readacad extends StatefulWidget {
-  const Readacad({Key? key}) : super(key: key);
+class Readmotif extends StatefulWidget {
+  const Readmotif({Key? key}) : super(key: key);
 
   @override
-  _ReadacadState createState() => _ReadacadState();
+  _ReadmotifState createState() => _ReadmotifState();
 }
 
-class _ReadacadState extends State<Readacad> {
+class _ReadmotifState extends State<Readmotif> {
   late Future<List> pay;
-  var serviceAcad = new ApiAcad();
-  File? image;
+  var serviceAcad = new ApiMotif();
 
   void initState() {
-    pay = serviceAcad.getacad();
+    pay = serviceAcad.getmotif();
     super.initState();
   }
 
@@ -34,7 +29,7 @@ class _ReadacadState extends State<Readacad> {
           backgroundColor: Colors.grey[300],
           centerTitle: true,
           title: Text(
-            "Liste des académiciens",
+            "Liste de tous les motifs",
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
         ),
@@ -45,7 +40,7 @@ class _ReadacadState extends State<Readacad> {
               onPressed: () => {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const Readacad()),
+                  MaterialPageRoute(builder: (context) => const Readmotif()),
                 )
               },
               child: Icon(Icons.refresh),
@@ -81,30 +76,19 @@ class _ReadacadState extends State<Readacad> {
                   itemCount: data.length,
                   itemBuilder: (context, index) {
                     return GestureDetector(
-                      onTap: () {
-                        // This Will Call When User Click On ListView Item
-                      },
+                      onTap: () {},
                       // Card Which Holds Layout Of ListView Item
                       child: Card(
                         child: Row(
                           children: <Widget>[
-                            Container(
-                                width: 100,
-                                height: 100,
-                                child: CircleAvatar(
-                                    radius: 50.0,
-                                    backgroundColor: Colors.grey,
-                                    backgroundImage:
-                                        verifImage(data[index]["photo"]))),
                             Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Row(
                                     children: <Widget>[
                                       Text(
-                                        data[index]["nom"],
+                                        "Motif : ",
                                         style: TextStyle(
                                           fontSize: 18,
                                           color:
@@ -116,40 +100,22 @@ class _ReadacadState extends State<Readacad> {
                                         width: 10,
                                       ),
                                       Text(
-                                        data[index]["prenoms"],
+                                        data[index]["libelle"],
                                         style: TextStyle(
                                           fontSize: 18,
-                                          color:
-                                              Color.fromARGB(255, 233, 164, 36),
+                                          color: Colors.black,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                       SizedBox(
                                         width: 10,
                                       ),
-                                      Text(
-                                        'Matricule: ${data[index]["matricule"]}  ',
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey[500],
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Row(
-                                    children: [
                                       ElevatedButton(
                                         onPressed: () => {
                                           showDialogFunc(
                                               context,
-                                              data[index]["id"],
-                                              data[index]["nom"],
-                                              data[index]["prenoms"],
-                                              data[index]["matricule"],
-                                              data[index]["photo"])
+                                              data[index]["libelle"],
+                                              data[index]["id"])
                                         },
                                         child: Text('Modifier'),
                                         style: ElevatedButton.styleFrom(
@@ -161,14 +127,16 @@ class _ReadacadState extends State<Readacad> {
                                       ElevatedButton(
                                         onPressed: () => {
                                           showSuprresion(
-                                              context, data[index]["id"])
+                                              context,
+                                              data[index]["libelle"],
+                                              data[index]["id"])
                                         },
                                         child: Text('Suppression'),
                                         style: ElevatedButton.styleFrom(
                                             primary: Colors.red),
                                       ),
                                     ],
-                                  )
+                                  ),
                                 ],
                               ),
                             )
@@ -179,7 +147,7 @@ class _ReadacadState extends State<Readacad> {
                   },
                 );
               } else if (snapshot.hasError) {
-                return Text('Une erreur de connexion est survenue');
+                return Text('Une erreur de connexion');
               }
               return const CircularProgressIndicator();
             },

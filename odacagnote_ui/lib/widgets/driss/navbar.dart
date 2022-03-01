@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:odacagnote_ui/views/driss/acad.dart';
+import 'package:odacagnote_ui/views/driss/motif.dart';
 import 'package:odacagnote_ui/views/driss/payments_menu.dart';
 
 class NavBar extends StatelessWidget {
@@ -26,13 +27,16 @@ class NavBar extends StatelessWidget {
             title: Text('Academicien'),
             onTap: () => {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const Menuglobal()))
+                  MaterialPageRoute(builder: (context) => const Readacad()))
             },
           ),
           ListTile(
             leading: Icon(Icons.tab),
             title: Text('Motifs'),
-            onTap: () => null,
+            onTap: () => {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Readmotif()))
+            },
           ),
 
           // Adding payments to the drawer
