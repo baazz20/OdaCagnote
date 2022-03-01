@@ -303,19 +303,24 @@ class ClassementParPaiementAPIView(APIView):
         result = {}
         queryset = Academicien.objects.all().order_by('-sommeTotalPaieyer')
         for i in queryset:
-            # result.append(i.nom)
             result[i.nom + " "+ i.prenoms]= i.sommeTotalPaieyer
 
         return Response(result)
 
 class Estimation(APIView):
+    """Estimation périodoque du solde total"""
     def get(self, request, jj, mm, AA):
         date_format = "%Y-%m-%d"
         slug = AA+'-'+mm+'-'+jj
         date =datetime.now().date()
+        # dateFuture : periode pour l'estimation
         dateFuture = datetime.strptime(str(slug),date_format)
+        # formatage de la date courante
         date = datetime.strptime(str(date),date_format)
         nbjour = dateFuture - date
-        queryset = Payement.objects.aggregate(Avg('montant'))
-        print(date)
-        return Response(queryset)
+        moyenneTotal = Payement.objects.aggregate(Avg('montant'))
+        moyenneJour = moyenneTotal["montant__avg"]/Payement.objects.all().count()
+        ab =Payement.objects.aggregate(comme=Sum('montant'))
+        soldeTotal = ab['comme']
+        estimation = soldeTotal+ (moyenneJour*nbjour.days)
+        return Response(estimation)
